@@ -19,21 +19,22 @@ interface SuperAdmin {
 }
 type RoleType<T> = T extends { role: string } ? T : User;
 type AdminOrSuperAdmin<T> = T extends { role: 'admin' } ? Admin : T extends { role: 'superadmin' } ? SuperAdmin : T;
-function getUser<T extends { role?: string }>(data: T):
+function getUser<T extends { role?: string, name?: string, email?: string, address?: string }>(data: T):
     AdminOrSuperAdmin<RoleType<T>> {
     if (data.role) {
         if (data.role === 'admin') {
-            return { id: 1, name: data.name, email: data.email, role: data.role } as
-                AdminOrSuperAdmin<RoleType<T>>;
+            return { name: data.name, email: data.email, role: data.role } as AdminOrSuperAdmin<RoleType<T>>;
         } else if (data.role === 'superadmin') {
             return {
-                id: 1, name: data.name, email: data.email, role: data.role,
-                permissions: []
-                     } as AdminOrSuperAdmin<RoleType<T>>;
+                name: data.name, email: data.email, role: data.role,
+                permissions: [] as string[]
+            } as AdminOrSuperAdmin<RoleType<T>>;
         }
     }
-    return { id: 1, name: data.name, email: data.email, address: data.address }
-    as AdminOrSuperAdmin<RoleType<T>>;
+    if ('address' in data) {
+        return { name: data.name, email: data.email, address: data.address } as AdminOrSuperAdmin<RoleType<T>>;
+    }
+    return { name: data.name, email: data.email } as AdminOrSuperAdmin<RoleType<T>>;
 }
 const user = getUser({
     id: 1, name: 'John', email: 'john@example.com',
