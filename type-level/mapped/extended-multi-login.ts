@@ -30,7 +30,6 @@ const userNullable: UserNullable = {
     name: 'John',
     age: null,
     address: '123 Main St, Anytown, CA, 12345',
-    d: null,
     email: null
 };
 const userReadonly: UserReadonly = {
